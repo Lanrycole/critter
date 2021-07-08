@@ -10,7 +10,7 @@ import java.util.Set;
 public class Employees {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
 

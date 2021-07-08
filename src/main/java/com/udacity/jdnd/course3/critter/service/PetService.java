@@ -25,6 +25,10 @@ public class PetService implements PetRepository {
 
     @Override
     public Pet savePet(Pet pet) {
+        Pet savedPet = petRepository.save(pet);
+        Customer customer = savedPet.getOwner();
+        customer.addPet(savedPet);
+        customerRepo.addCustomer(customer);
 
         return petRepository.save(pet);
     }

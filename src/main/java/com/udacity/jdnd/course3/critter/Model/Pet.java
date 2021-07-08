@@ -8,7 +8,7 @@ import java.time.LocalDate;
 @Entity(name = "Pet")
 public class Pet {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     public Customer getOwner() {
