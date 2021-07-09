@@ -27,18 +27,25 @@ public class PetController {
 
     @PostMapping
     public PetDTO savePet(@RequestBody PetDTO petDTO) {
-            Pet savedPet = convertPetDTotoPet(petDTO);
-            petDTO.setId(savedPet.getId());
-            petDTO.setOwnerId(savedPet.getOwner().getId());
 
-        return petDTO;
+
+        Pet savedPet = convertPetDTotoPet(petDTO);
+        Customer customer = customerRepo.getCustomerById(petDTO.getOwnerId());
+        if (customer.getId() != null) {
+            savedPet.setOwner(customer);
+            Pet savP = petRepository.savePet(savedPet);
+            petDTO.setOwnerId(savP.getOwner().getId());
+            petDTO.setId(savP.getId());
+            return petDTO;
+        } else {
+            throw new IllegalStateException("Add pet to a customer");
+        }
+
     }
 
     @GetMapping("/{petId}")
     public PetDTO getPet(@PathVariable long petId) {
-        PetDTO savedPet= convertPetToPetDTO(petRepository.getPet(petId));
-        savedPet.setOwnerId(customerRepo.getCustomerById(savedPet.getOwnerId()).getId());
-        return savedPet;
+        return convertPetToPetDTO(petRepository.getPet(petId));
     }
 
     @GetMapping
@@ -55,20 +62,14 @@ public class PetController {
     private Pet convertPetDTotoPet(PetDTO petDTO) {
         Pet pet = new Pet();
         BeanUtils.copyProperties(petDTO, pet);
-
-        Long customerId = petDTO.getOwnerId();
-        Customer customer = customerRepo.getCustomerById(customerId);
-
-        pet.setOwner(customer);
-
-        return petRepository.savePet(pet);
+        return pet;
     }
 
     private PetDTO convertPetToPetDTO(Pet pet) {
         PetDTO petDTO = new PetDTO();
         BeanUtils.copyProperties(pet, petDTO);
 
-        if(pet.getOwner() !=null){
+        if (pet.getOwner() != null) {
             petDTO.setOwnerId(pet.getId());
         }
         return petDTO;
@@ -79,6 +80,7 @@ public class PetController {
         pets.forEach(e -> {
             PetDTO pdto = new PetDTO();
             BeanUtils.copyProperties(e, pdto);
+            pdto.setOwnerId(e.getOwner().getId());
             petDToList.add(pdto);
         });
         return petDToList;

@@ -34,7 +34,7 @@ public class UserController {
 
     @PostMapping("/customer")
     public CustomerDTO saveCustomer(@RequestBody CustomerDTO customerDTO) {
-        Customer savedCustomer = this.convertCustomerDTOtoCustomer(customerDTO);
+        Customer savedCustomer = customerRepo.addCustomer(this.convertCustomerDTOtoCustomer(customerDTO));
         customerDTO.setId(savedCustomer.getId());
         return customerDTO;
     }
@@ -74,7 +74,7 @@ public class UserController {
     private Customer convertCustomerDTOtoCustomer(CustomerDTO customerDto) {
         Customer customer = new Customer();
         BeanUtils.copyProperties(customerDto, customer);
-        return customerRepo.addCustomer(customer);
+        return customer;
     }
 
     private List<CustomerDTO> convertListOfCustomerToCustomerDTO(List<Customer> customer) {
@@ -103,8 +103,7 @@ public class UserController {
     private Employees empDTOEmployee(EmployeeDTO employeeDTO) {
         Employees employee = new Employees();
         BeanUtils.copyProperties(employeeDTO, employee);
-        employeeRepo.addEmployee(employee);
-        return employee;
+        return employeeRepo.addEmployee(employee);
     }
 
     private List<EmployeeDTO> employeeToDTO(List<Employees> employee) {

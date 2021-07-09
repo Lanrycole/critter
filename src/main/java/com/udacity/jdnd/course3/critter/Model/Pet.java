@@ -11,6 +11,13 @@ public class Pet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+//    @JoinColumn(name = "owner_id")
+//    @ManyToOne(cascade = CascadeType.ALL)
+@ManyToOne(fetch = FetchType.LAZY)
+private Customer owner;
+
+    private PetType type;
+
     public Customer getOwner() {
         return owner;
     }
@@ -20,13 +27,7 @@ public class Pet {
         this.owner = customer;
     }
 
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    private Customer owner;
-
-    private PetType type;
-
-//    @JoinColumn(name = "customerId")
+    //    @JoinColumn(name = "customerId")
 //    @ManyToOne(targetEntity=Customer.class, cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 //    private long ownerId;
     private LocalDate birthDate;
@@ -80,10 +81,11 @@ public class Pet {
     public Pet(long id,
                String name,
                PetType type,
+               Customer owner,
                LocalDate birthDate, String notes) {
         this.type = type;
         this.name = name;
-
+        this.owner = owner;
         this.birthDate = birthDate;
         this.notes = notes;
         this.id = id;
@@ -98,7 +100,6 @@ public class Pet {
         return "Pet{" +
                 "ID=" + getId() +
                 "type=" + type +
-
                 ", birthDate=" + birthDate +
                 ", notes='" + notes + '\'' +
                 '}';

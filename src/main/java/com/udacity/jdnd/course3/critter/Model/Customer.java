@@ -7,6 +7,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Entity(name = "Customer")
 public class Customer {
 
@@ -19,9 +20,9 @@ public class Customer {
     private String phoneNumber;
     private String notes;
 
-    @OneToMany(fetch = FetchType.LAZY,
-            mappedBy = "owner")
-    private List<Pet> pets;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner", fetch = FetchType.LAZY)
+     private List<Pet> pets;
 
     public String getName() {
         return name;

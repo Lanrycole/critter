@@ -8,10 +8,12 @@ import com.udacity.jdnd.course3.critter.Repository.PetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class PetService implements PetRepository {
 
 
@@ -30,7 +32,7 @@ public class PetService implements PetRepository {
         customer.addPet(savedPet);
         customerRepo.addCustomer(customer);
 
-        return petRepository.save(pet);
+        return savedPet;
     }
 
     @Override
@@ -40,12 +42,7 @@ public class PetService implements PetRepository {
 
     @Override
     public Pet getPet(long petId) {
-        Optional<Pet> foundPet = petRepository.findById(petId);
-        Pet pet = new Pet();
-        if (foundPet.isPresent()) {
-            pet = foundPet.get();
-        }
-        return pet;
+        return petRepository.getOne(petId);
     }
 
     @Override
