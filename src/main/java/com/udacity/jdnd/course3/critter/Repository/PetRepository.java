@@ -1,5 +1,6 @@
 package com.udacity.jdnd.course3.critter.Repository;
 
+import com.udacity.jdnd.course3.critter.Model.Customer;
 import com.udacity.jdnd.course3.critter.Model.Pet;
 import org.springframework.stereotype.Repository;
 
@@ -11,4 +12,5 @@ public interface PetRepository {
     List<Pet> getAllPets();
     Pet getPet(long petId);
     List<Pet> getPetsByOwner(Long id);
+
 }

@@ -5,6 +5,7 @@ import com.udacity.jdnd.course3.critter.Model.Employees;
 import com.udacity.jdnd.course3.critter.Model.Pet;
 import com.udacity.jdnd.course3.critter.Repository.CustomerRepository;
 import com.udacity.jdnd.course3.critter.Repository.EmployeeRepository;
+import com.udacity.jdnd.course3.critter.Repository.PetRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,10 +27,14 @@ public class UserController {
 
     CustomerRepository customerRepo;
     EmployeeRepository employeeRepo;
+    PetRepository petRepo;
 
-    public UserController(CustomerRepository customerRepo, EmployeeRepository employeeRepo) {
+    public UserController(CustomerRepository customerRepo,
+                          EmployeeRepository employeeRepo,
+                          PetRepository petRepo) {
         this.customerRepo = customerRepo;
         this.employeeRepo = employeeRepo;
+        this.petRepo = petRepo;
     }
 
     @PostMapping("/customer")
@@ -46,7 +51,7 @@ public class UserController {
 
     @GetMapping("/customer/pet/{petId}")
     public CustomerDTO getOwnerByPet(@PathVariable long petId) {
-        throw new UnsupportedOperationException();
+        return convertCustomerToCustomerDTO(customerRepo.getOwnerByPet(petId));
     }
 
     @PostMapping("/employee")
@@ -82,24 +87,38 @@ public class UserController {
         customer.forEach(e -> {
             CustomerDTO customerDto = new CustomerDTO();
             BeanUtils.copyProperties(e, customerDto);
+
+            List<Pet> pets = petRepo.getPetsByOwner(e.getId());
+            List<Long> petId;
+            if (!pets.isEmpty()) {
+                petId = new ArrayList<>();
+                pets.forEach(p -> {
+                    petId.add(p.getId());
+                    customerDto.setPetIds(petId);
+                });
+
+
+            }
             customerDtoList.add(customerDto);
         });
 
         return customerDtoList;
     }
+
     private CustomerDTO convertCustomerToCustomerDTO(Customer customer) {
 
         CustomerDTO customerDTO = new CustomerDTO();
 
         BeanUtils.copyProperties(customer, customerDTO);
 
-        if (customer.getPets()!= null) {
+        if (customer.getPets() != null) {
             customerDTO.setPetIds(customer.getPets().stream().map(Pet::getId).collect(Collectors.toList()));
 
         }
 
         return customerDTO;
     }
+
     private Employees empDTOEmployee(EmployeeDTO employeeDTO) {
         Employees employee = new Employees();
         BeanUtils.copyProperties(employeeDTO, employee);
@@ -110,7 +129,7 @@ public class UserController {
         List<EmployeeDTO> employeeDToList = new ArrayList<>();
         employee.forEach(e -> {
             EmployeeDTO employeeDTO = new EmployeeDTO();
-          BeanUtils.copyProperties(e, employeeDTO);
+            BeanUtils.copyProperties(e, employeeDTO);
             employeeDToList.add(employeeDTO);
         });
 

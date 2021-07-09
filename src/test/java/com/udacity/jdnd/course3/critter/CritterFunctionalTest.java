@@ -99,7 +99,6 @@ public class CritterFunctionalTest {
         //customer 1 saved
         CustomerDTO newCustomer = userController.saveCustomer(customerDTO);
 
-
         //Pet 2 saved and returned
 
         PetDTO petDTO2 = createPetDTO();

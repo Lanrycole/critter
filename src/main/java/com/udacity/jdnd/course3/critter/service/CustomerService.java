@@ -3,6 +3,7 @@ package com.udacity.jdnd.course3.critter.service;
 import com.udacity.jdnd.course3.critter.Model.Customer;
 import com.udacity.jdnd.course3.critter.Repository.CustomerJPARepository;
 import com.udacity.jdnd.course3.critter.Repository.CustomerRepository;
+import com.udacity.jdnd.course3.critter.Repository.PetJPARepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,9 +13,12 @@ import java.util.Optional;
 public class CustomerService implements CustomerRepository {
 
     CustomerJPARepository customerRepo;
+    PetJPARepository petRepo;
 
-    public CustomerService(CustomerJPARepository customerRepo) {
+    public CustomerService(CustomerJPARepository customerRepo,
+                           PetJPARepository petRepo) {
         this.customerRepo = customerRepo;
+        this.petRepo = petRepo;
     }
 
 
@@ -42,4 +46,12 @@ public class CustomerService implements CustomerRepository {
 
         return customer;
     }
+
+    @Override
+    public Customer getOwnerByPet(Long id) {
+        Long ownerId = petRepo.getOwnerByPet(id);
+        return customerRepo.getOne(ownerId);
+    }
+
+
 }
