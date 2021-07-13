@@ -5,12 +5,10 @@ import com.udacity.jdnd.course3.critter.Model.Pet;
 import com.udacity.jdnd.course3.critter.Repository.CustomerRepository;
 import com.udacity.jdnd.course3.critter.Repository.PetJPARepository;
 import com.udacity.jdnd.course3.critter.Repository.PetRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -39,9 +37,11 @@ public class PetService implements PetRepository {
     public Pet savePet(Pet pet) {
         Pet savedPet = petRepository.save(pet);
         Customer customer = savedPet.getOwner();
+        if(customer.getId()!=null){
+            savedPet.setOwner(customer);
+        }
         customer.addPet(savedPet);
         customerRepo.addCustomer(customer);
-
         return savedPet;
     }
 

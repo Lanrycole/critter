@@ -3,12 +3,9 @@ package com.udacity.jdnd.course3.critter.schedule;
 import com.udacity.jdnd.course3.critter.Model.Employees;
 import com.udacity.jdnd.course3.critter.Model.Pet;
 import com.udacity.jdnd.course3.critter.Model.Schedule;
-import com.udacity.jdnd.course3.critter.Repository.EmployeeRepository;
-import com.udacity.jdnd.course3.critter.Repository.PetRepository;
-import com.udacity.jdnd.course3.critter.Repository.ScheduleRepository;
+import com.udacity.jdnd.course3.critter.service.EmployeeService;
+import com.udacity.jdnd.course3.critter.service.PetService;
 import com.udacity.jdnd.course3.critter.service.ScheduleService;
-import com.udacity.jdnd.course3.critter.user.EmployeeDTO;
-import com.udacity.jdnd.course3.critter.user.EmployeeSkill;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,33 +19,33 @@ import java.util.List;
 @RequestMapping("/schedule")
 public class ScheduleController {
 
-    ScheduleRepository scheduleRepo;
-    EmployeeRepository employeeRepo;
-    PetRepository petRepo;
+    ScheduleService scheduleService;
+    EmployeeService employeeService;
+    PetService petService;
 
     /**
      * Auto-wiring the above repositories using constructor
-     * @param scheduleRepo
-     * @param employeeRepo
-     * @param petRepo
+     * @param scheduleService
+     * @param employeeService
+     * @param petService
      */
-    public ScheduleController(ScheduleRepository scheduleRepo,
-                              EmployeeRepository employeeRepo,
-                              PetRepository petRepo) {
-        this.scheduleRepo = scheduleRepo;
-        this.employeeRepo = employeeRepo;
-        this.petRepo = petRepo;
+    public ScheduleController(ScheduleService scheduleService,
+                              EmployeeService employeeService,
+                              PetService petService) {
+        this.scheduleService = scheduleService;
+        this.employeeService = employeeService;
+        this.petService = petService;
     }
 
     @PostMapping
     public ScheduleDTO createSchedule(@RequestBody ScheduleDTO scheduleDTO) {
-        Schedule sch = scheduleRepo.createSchedule(convertScheduleDTOtoSchedule(scheduleDTO));
+        Schedule sch = scheduleService.createSchedule(convertScheduleDTOtoSchedule(scheduleDTO));
         return convertScheduleToDTO(sch);
     }
 
     @GetMapping
     public List<ScheduleDTO> getAllSchedules() {
-        List<Schedule> schedules = scheduleRepo.getAllSchedules();
+        List<Schedule> schedules = scheduleService.getAllSchedules();
         List<ScheduleDTO> scheduleDTOList = new ArrayList<>();
 
         schedules.forEach(schedule->{
@@ -61,7 +58,7 @@ public class ScheduleController {
 
     @GetMapping("/pet/{petId}")
     public List<ScheduleDTO> getScheduleForPet(@PathVariable long petId) {
-        List<Schedule> scheduleList = scheduleRepo.getScheduleForPet(petId);
+        List<Schedule> scheduleList = scheduleService.getScheduleForPet(petId);
         List<ScheduleDTO> scheduleDTOList = new ArrayList<>();
 
             scheduleList.forEach(schList -> {
@@ -73,7 +70,7 @@ public class ScheduleController {
 
     @GetMapping("/employee/{employeeId}")
     public List<ScheduleDTO> getScheduleForEmployee(@PathVariable long employeeId) {
-        List<Schedule> scheduleList = scheduleRepo.getScheduleForEmployee(employeeId);
+        List<Schedule> scheduleList = scheduleService.getScheduleForEmployee(employeeId);
         List<ScheduleDTO> scheduleDTOList = new ArrayList<>();
 
         scheduleList.forEach(schList -> {
@@ -85,7 +82,7 @@ public class ScheduleController {
 
     @GetMapping("/customer/{customerId}")
     public List<ScheduleDTO> getScheduleForCustomer(@PathVariable long customerId) {
-        List<Schedule> scheduleList = scheduleRepo.getScheduleForCustomer(customerId);
+        List<Schedule> scheduleList = scheduleService.getScheduleForCustomer(customerId);
         List<ScheduleDTO> scheduleDTOList = new ArrayList<>();
 
             scheduleList.forEach(schList -> {
@@ -135,7 +132,7 @@ public class ScheduleController {
 
         if (!petIds.isEmpty()) {
             petIds.forEach(id -> {
-                Pet pet = petRepo.getPet(id);
+                Pet pet = petService.getPet(id);
                 petsList.add(pet);
 
             });
@@ -143,7 +140,7 @@ public class ScheduleController {
 
         if (!employeeIds.isEmpty()) {
             employeeIds.forEach(id -> {
-                Employees emp = employeeRepo.findEmployeeById(id);
+                Employees emp = employeeService.findEmployeeById(id);
                 employeeList.add(emp);
             });
 

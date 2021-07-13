@@ -3,9 +3,9 @@ package com.udacity.jdnd.course3.critter.user;
 import com.udacity.jdnd.course3.critter.Model.Customer;
 import com.udacity.jdnd.course3.critter.Model.Employees;
 import com.udacity.jdnd.course3.critter.Model.Pet;
-import com.udacity.jdnd.course3.critter.Repository.CustomerRepository;
-import com.udacity.jdnd.course3.critter.Repository.EmployeeRepository;
-import com.udacity.jdnd.course3.critter.Repository.PetRepository;
+import com.udacity.jdnd.course3.critter.service.CustomerService;
+import com.udacity.jdnd.course3.critter.service.EmployeeService;
+import com.udacity.jdnd.course3.critter.service.PetService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,57 +25,57 @@ import java.util.stream.Collectors;
 @RequestMapping("/user")
 public class UserController {
 
-    CustomerRepository customerRepo;
-    EmployeeRepository employeeRepo;
-    PetRepository petRepo;
+    CustomerService customerService;
+    EmployeeService employeeService;
+    PetService petService;
 
-    public UserController(CustomerRepository customerRepo,
-                          EmployeeRepository employeeRepo,
-                          PetRepository petRepo) {
-        this.customerRepo = customerRepo;
-        this.employeeRepo = employeeRepo;
-        this.petRepo = petRepo;
+    public UserController(CustomerService customerService,
+                          EmployeeService employeeService,
+                          PetService petService) {
+        this.customerService = customerService;
+        this.employeeService = employeeService;
+        this.petService = petService;
     }
 
     @PostMapping("/customer")
     public CustomerDTO saveCustomer(@RequestBody CustomerDTO customerDTO) {
-        Customer savedCustomer = customerRepo.addCustomer(this.convertCustomerDTOtoCustomer(customerDTO));
+        Customer savedCustomer = customerService.addCustomer(this.convertCustomerDTOtoCustomer(customerDTO));
         customerDTO.setId(savedCustomer.getId());
         return customerDTO;
     }
 
     @GetMapping("/customer")
     public List<CustomerDTO> getAllCustomers() {
-        return this.convertListOfCustomerToCustomerDTO(customerRepo.getAllCustomers());
+        return this.convertListOfCustomerToCustomerDTO(customerService.getAllCustomers());
     }
 
     @GetMapping("/customer/pet/{petId}")
     public CustomerDTO getOwnerByPet(@PathVariable long petId) {
-        return convertCustomerToCustomerDTO(customerRepo.getOwnerByPet(petId));
+        return convertCustomerToCustomerDTO(customerService.getOwnerByPet(petId));
     }
 
     @PostMapping("/employee")
     public EmployeeDTO saveEmployee(@RequestBody EmployeeDTO employeeDTO) {
-        Employees savedEmployee = employeeRepo.addEmployee(this.convertEmployeeDTOtoEmployee(employeeDTO));
+        Employees savedEmployee = employeeService.addEmployee(this.convertEmployeeDTOtoEmployee(employeeDTO));
         employeeDTO.setId(savedEmployee.getId());
         return employeeDTO;
     }
 
     @GetMapping("/employee/{employeeId}")
     public EmployeeDTO getEmployee(@PathVariable long employeeId) {
-        return this.convertEmployeeToEmployeeDTO(employeeRepo.findEmployeeById(employeeId));
+        return this.convertEmployeeToEmployeeDTO(employeeService.findEmployeeById(employeeId));
     }
 
     @PutMapping("/employee/{employeeId}")
     public void setAvailability(@RequestBody Set<DayOfWeek> daysAvailable, @PathVariable long employeeId) {
-        employeeRepo.setAvailability(daysAvailable, employeeId);
+        employeeService.setAvailability(daysAvailable, employeeId);
     }
 
     @GetMapping("/employee/availability")
     public List<EmployeeDTO> findEmployeesForService(@RequestBody EmployeeRequestDTO employeeDTO) {
         DayOfWeek daysAvailable = employeeDTO.getDate().getDayOfWeek();
         Set<EmployeeSkill> skills = employeeDTO.getSkills();
-        List<Employees> employeeList = employeeRepo.getEmployeesForService(skills, daysAvailable);
+        List<Employees> employeeList = employeeService.getEmployeesForService(skills, daysAvailable);
 
         List<EmployeeDTO> employeeDtotoList = new ArrayList<>();
         if (!employeeList.isEmpty()) {
@@ -101,7 +101,7 @@ public class UserController {
             CustomerDTO customerDto = new CustomerDTO();
             BeanUtils.copyProperties(e, customerDto);
 
-            List<Pet> pets = petRepo.getOwnerByPet(e.getId());
+            List<Pet> pets = petService.getOwnerByPet(e.getId());
             List<Long> petId;
             if (!pets.isEmpty()) {
                 petId = new ArrayList<>();

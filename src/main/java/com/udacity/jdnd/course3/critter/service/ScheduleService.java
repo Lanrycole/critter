@@ -6,9 +6,11 @@ import com.udacity.jdnd.course3.critter.Repository.ScheduleJPARepository;
 import com.udacity.jdnd.course3.critter.Repository.ScheduleRepository;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
+@Transactional
 public class ScheduleService implements ScheduleRepository {
 
 
