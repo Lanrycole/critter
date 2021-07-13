@@ -19,25 +19,48 @@ public class EmployeeService implements EmployeeRepository {
 
     EmployeeJPARepository employeeRepo;
 
+    /**
+     *
+     * @param employeeRepo
+     */
     public EmployeeService(EmployeeJPARepository employeeRepo) {
         this.employeeRepo = employeeRepo;
     }
 
+    /**
+     *
+     * @param employee
+     * @return saved employee
+     */
     @Override
     public Employees addEmployee(Employees employee) {
         return employeeRepo.save(employee);
     }
 
+    /**
+     *
+     * @return List of Employees
+     */
     @Override
     public List<Employees> getAllEmployees() {
         return employeeRepo.findAll();
     }
 
+    /**
+     *
+     * @param id
+     * @return an employee by ID
+     */
     @Override
     public Employees findEmployeeById(Long id) {
         return  employeeRepo.getOne(id);
     }
 
+    /**
+     *
+     * @param availability
+     * @param id
+     */
     @Override
     public void setAvailability(Set<DayOfWeek> availability, Long id) {
         Employees employee = employeeRepo.getOne(id);
@@ -50,6 +73,13 @@ public class EmployeeService implements EmployeeRepository {
         }
 
     }
+
+    /**
+     *
+     * @param skills
+     * @param dayOfWeek
+     * @return list of employees
+     */
     @Override
     public List<Employees> getEmployeesForService(Set<EmployeeSkill> skills, DayOfWeek dayOfWeek) {
         List<Employees> employees = new ArrayList<>();

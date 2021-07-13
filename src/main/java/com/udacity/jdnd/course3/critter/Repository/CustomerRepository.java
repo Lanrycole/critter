@@ -9,7 +9,6 @@ public interface CustomerRepository {
     Customer addCustomer(Customer customer);
 
     List<Customer> getAllCustomers();
-
     Customer getCustomerById(Long id);
     Customer getOwnerByPet(Long id);
 

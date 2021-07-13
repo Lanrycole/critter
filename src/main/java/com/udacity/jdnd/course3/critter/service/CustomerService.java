@@ -16,22 +16,40 @@ public class CustomerService implements CustomerRepository {
     CustomerJPARepository customerRepo;
     PetJPARepository petRepo;
 
+
+    /**
+     *
+     * @param customerRepo
+     * @param petRepo
+     */
     public CustomerService(CustomerJPARepository customerRepo,
                            PetJPARepository petRepo) {
         this.customerRepo = customerRepo;
         this.petRepo = petRepo;
     }
 
-
+    /**
+     *
+     * @param customer
+     * @return customer
+     */
     public Customer addCustomer(Customer customer) {
         return customerRepo.save(customer);
     }
 
+    /**
+     *
+     * @return list of customers
+     */
     public List<Customer> getAllCustomers() {
         return customerRepo.findAll();
     }
 
-
+    /**
+     *
+     * @param id
+     * @return
+     */
     public Customer getCustomerById(Long id) {
 
         Optional<Customer> foundCustomer = customerRepo.findById(id);
@@ -48,6 +66,11 @@ public class CustomerService implements CustomerRepository {
         return customer;
     }
 
+    /**
+     *
+     * @param id
+     * @return
+     */
     @Override
     public Customer getOwnerByPet(Long id) {
         Pet pet = petRepo.getOne(id);

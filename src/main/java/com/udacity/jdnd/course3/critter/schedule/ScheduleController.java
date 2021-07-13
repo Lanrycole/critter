@@ -26,6 +26,12 @@ public class ScheduleController {
     EmployeeRepository employeeRepo;
     PetRepository petRepo;
 
+    /**
+     * Auto-wiring the above repositories using constructor
+     * @param scheduleRepo
+     * @param employeeRepo
+     * @param petRepo
+     */
     public ScheduleController(ScheduleRepository scheduleRepo,
                               EmployeeRepository employeeRepo,
                               PetRepository petRepo) {
