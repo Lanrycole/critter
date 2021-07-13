@@ -10,36 +10,52 @@ import java.util.Set;
 public class Schedule {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @OneToMany
-    private List<Employees> employee;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Employees> employees;
 
-    @OneToMany
-    private List<Pet> pet;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Pet> pets;
+
     private LocalDate date;
 
     @ElementCollection(targetClass = EmployeeSkill.class)
     @Enumerated(EnumType.STRING)
-//    @CollectionTable(name="activities")
     @Column(name="activities")
     private Set<EmployeeSkill> activities;
 
-    public List<Employees> getEmployee() {
-        return employee;
+    public long getId() {
+        return id;
     }
 
-    public void setEmployee(List<Employees> employee) {
-        this.employee = employee;
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public List<Pet> getPets() {
+        return pets;
+    }
+
+    public void setPets(List<Pet> pets) {
+        this.pets = pets;
+    }
+
+    public List<Employees> getEmployees() {
+        return employees;
+    }
+
+    public void setEmployees(List<Employees> employee) {
+        this.employees = employee;
     }
 
     public List<Pet> getPetIds() {
-        return pet;
+        return pets;
     }
 
     public void setPetIds(List<Pet> pet) {
-        this.pet = pet;
+        this.pets = pet;
     }
 
     public LocalDate getDate() {
@@ -55,6 +71,17 @@ public class Schedule {
     }
 
     public void setActivities(Set<EmployeeSkill> activities) {
+        this.activities = activities;
+    }
+
+    public Schedule() {
+    }
+
+    public Schedule(long id, List<Employees> employees, List<Pet> pets, LocalDate date, Set<EmployeeSkill> activities) {
+        this.id = id;
+        this.employees = employees;
+        this.pets = pets;
+        this.date = date;
         this.activities = activities;
     }
 }

@@ -56,24 +56,37 @@ public class UserController {
 
     @PostMapping("/employee")
     public EmployeeDTO saveEmployee(@RequestBody EmployeeDTO employeeDTO) {
-        Employees savedEmployee = empDTOEmployee(employeeDTO);
+        Employees savedEmployee = employeeRepo.addEmployee(this.convertEmployeeDTOtoEmployee(employeeDTO));
         employeeDTO.setId(savedEmployee.getId());
         return employeeDTO;
     }
 
     @GetMapping("/employee/{employeeId}")
     public EmployeeDTO getEmployee(@PathVariable long employeeId) {
-        return employeeToDTO(employeeRepo.findEmployeesById(employeeId));
+        return this.convertEmployeeToEmployeeDTO(employeeRepo.findEmployeeById(employeeId));
     }
 
     @PutMapping("/employee/{employeeId}")
     public void setAvailability(@RequestBody Set<DayOfWeek> daysAvailable, @PathVariable long employeeId) {
-        throw new UnsupportedOperationException();
+        employeeRepo.setAvailability(daysAvailable, employeeId);
     }
 
     @GetMapping("/employee/availability")
     public List<EmployeeDTO> findEmployeesForService(@RequestBody EmployeeRequestDTO employeeDTO) {
-        throw new UnsupportedOperationException();
+        DayOfWeek daysAvailable = employeeDTO.getDate().getDayOfWeek();
+        Set<EmployeeSkill> skills = employeeDTO.getSkills();
+        List<Employees> employeeList = employeeRepo.getEmployeesForService(skills, daysAvailable);
+
+        List<EmployeeDTO> employeeDtotoList = new ArrayList<>();
+        if (!employeeList.isEmpty()) {
+
+            employeeList.forEach(employee -> {
+                EmployeeDTO empDto = convertEmployeeToEmployeeDTO(employee);
+                employeeDtotoList.add(empDto);
+            });
+
+        }
+        return employeeDtotoList;
     }
 
     private Customer convertCustomerDTOtoCustomer(CustomerDTO customerDto) {
@@ -88,7 +101,7 @@ public class UserController {
             CustomerDTO customerDto = new CustomerDTO();
             BeanUtils.copyProperties(e, customerDto);
 
-            List<Pet> pets = petRepo.getPetsByOwner(e.getId());
+            List<Pet> pets = petRepo.getOwnerByPet(e.getId());
             List<Long> petId;
             if (!pets.isEmpty()) {
                 petId = new ArrayList<>();
@@ -96,7 +109,6 @@ public class UserController {
                     petId.add(p.getId());
                     customerDto.setPetIds(petId);
                 });
-
 
             }
             customerDtoList.add(customerDto);
@@ -106,23 +118,18 @@ public class UserController {
     }
 
     private CustomerDTO convertCustomerToCustomerDTO(Customer customer) {
-
         CustomerDTO customerDTO = new CustomerDTO();
-
         BeanUtils.copyProperties(customer, customerDTO);
-
         if (customer.getPets() != null) {
             customerDTO.setPetIds(customer.getPets().stream().map(Pet::getId).collect(Collectors.toList()));
-
         }
-
         return customerDTO;
     }
 
-    private Employees empDTOEmployee(EmployeeDTO employeeDTO) {
+    private Employees convertEmployeeDTOtoEmployee(EmployeeDTO employeeDTO) {
         Employees employee = new Employees();
         BeanUtils.copyProperties(employeeDTO, employee);
-        return employeeRepo.addEmployee(employee);
+        return employee;
     }
 
     private List<EmployeeDTO> employeeToDTO(List<Employees> employee) {
@@ -137,9 +144,21 @@ public class UserController {
     }
 
 
-    private EmployeeDTO employeeToDTO(Employees employee) {
+    private EmployeeDTO convertEmployeeToEmployeeDTO(Employees employee) {
         EmployeeDTO emp = new EmployeeDTO();
         BeanUtils.copyProperties(employee, emp);
         return emp;
     }
+
+
+    private List<EmployeeDTO> convertListOfEmployeeToEmployeeDTO(List<Employees> employee) {
+        List<EmployeeDTO> employeeDtoList = new ArrayList<>();
+        employee.forEach(e -> {
+            EmployeeDTO employeeDTO = new EmployeeDTO();
+            BeanUtils.copyProperties(e, employeeDTO);
+            employeeDtoList.add(employeeDTO);
+        });
+        return employeeDtoList;
+    }
+
 }

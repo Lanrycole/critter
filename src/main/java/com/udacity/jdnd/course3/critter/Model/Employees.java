@@ -16,14 +16,12 @@ public class Employees {
 
     @ElementCollection(targetClass = EmployeeSkill.class)
     @Enumerated(EnumType.STRING)
-//    @CollectionTable(name = "employee_skills")
     @Column(name = "skills")
     private Set<EmployeeSkill> skills;
 
     @ElementCollection(targetClass = DayOfWeek.class)
     @Enumerated(EnumType.STRING)
-//    @CollectionTable(name = "employee_availability")
-    @Column(name = "daysAvailable")
+     @Column(name = "daysAvailable")
     private Set<DayOfWeek> daysAvailable;
 
     private String name;
@@ -52,6 +50,14 @@ public class Employees {
         this.name = name;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
     public Employees(long id, String name, Set<EmployeeSkill> skills) {
         this.id = id;
         this.name = name;
@@ -72,11 +78,5 @@ public class Employees {
                 '}';
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public Long getId() {
-        return id;
-    }
 }

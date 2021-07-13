@@ -27,8 +27,6 @@ public class PetController {
 
     @PostMapping
     public PetDTO savePet(@RequestBody PetDTO petDTO) {
-
-
         Pet savedPet = convertPetDTotoPet(petDTO);
         Customer customer = customerRepo.getCustomerById(petDTO.getOwnerId());
         if (customer.getId() != null) {
@@ -55,9 +53,8 @@ public class PetController {
 
     @GetMapping("/owner/{ownerId}")
     public List<PetDTO> getPetsByOwner(@PathVariable long ownerId) {
-        return convertPetToPetDTO(petRepository.getPetsByOwner(ownerId));
+        return convertPetToPetDTO(petRepository.getOwnerByPet(ownerId));
     }
-
 
     private Pet convertPetDTotoPet(PetDTO petDTO) {
         Pet pet = new Pet();
@@ -68,7 +65,6 @@ public class PetController {
     private PetDTO convertPetToPetDTO(Pet pet) {
         PetDTO petDTO = new PetDTO();
         BeanUtils.copyProperties(pet, petDTO);
-
         if (pet.getOwner() != null) {
             petDTO.setOwnerId(pet.getId());
         }
@@ -85,6 +81,4 @@ public class PetController {
         });
         return petDToList;
     }
-
-
 }

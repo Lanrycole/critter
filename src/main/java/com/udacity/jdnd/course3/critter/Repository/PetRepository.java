@@ -11,6 +11,8 @@ public interface PetRepository {
     Pet savePet(Pet pet);
     List<Pet> getAllPets();
     Pet getPet(long petId);
-    List<Pet> getPetsByOwner(Long id);
+    List<Pet> getOwnerByPet(Long id);
+
+
 
 }

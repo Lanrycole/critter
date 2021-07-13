@@ -46,9 +46,11 @@ public class PetService implements PetRepository {
     }
 
     @Override
-    public List<Pet> getPetsByOwner(Long id) {
+    public List<Pet> getOwnerByPet(Long id) {
+            return petRepository.getOwnerByPet(id);
 
-        return petRepository.getPetsByOwner(id);
+
     }
+
 
 }

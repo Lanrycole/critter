@@ -1,6 +1,7 @@
 package com.udacity.jdnd.course3.critter.service;
 
 import com.udacity.jdnd.course3.critter.Model.Customer;
+import com.udacity.jdnd.course3.critter.Model.Pet;
 import com.udacity.jdnd.course3.critter.Repository.CustomerJPARepository;
 import com.udacity.jdnd.course3.critter.Repository.CustomerRepository;
 import com.udacity.jdnd.course3.critter.Repository.PetJPARepository;
@@ -49,8 +50,8 @@ public class CustomerService implements CustomerRepository {
 
     @Override
     public Customer getOwnerByPet(Long id) {
-        Long ownerId = petRepo.getOwnerByPet(id);
-        return customerRepo.getOne(ownerId);
+        Pet pet = petRepo.getOne(id);
+        return customerRepo.getOne(pet.getOwner().getId());
     }
 
 
