@@ -65,7 +65,15 @@ public class Customer {
     }
 
 
-    public Customer(Long id, String phoneNumber, String name, String notes, List<Pet> pets) {
+    /**
+     *
+     * @param id
+     * @param name
+     * @param phoneNumber
+     * @param notes
+     * @param pets
+     */
+    public Customer(Long id, String name, String phoneNumber, String notes, List<Pet> pets) {
         this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;

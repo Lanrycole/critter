@@ -36,24 +36,20 @@ public class ScheduleController {
 
     @PostMapping
     public ScheduleDTO createSchedule(@RequestBody ScheduleDTO scheduleDTO) {
-        scheduleRepo.createSchedule(convertScheduleDTOtoSchedule(scheduleDTO));
-        return scheduleDTO;
+        Schedule sch = scheduleRepo.createSchedule(convertScheduleDTOtoSchedule(scheduleDTO));
+        return convertScheduleToDTO(sch);
     }
 
     @GetMapping
     public List<ScheduleDTO> getAllSchedules() {
-        List<Schedule> schedule = scheduleRepo.getAllSchedules();
+        List<Schedule> schedules = scheduleRepo.getAllSchedules();
         List<ScheduleDTO> scheduleDTOList = new ArrayList<>();
 
-        if (!schedule.isEmpty()) {
-            schedule.forEach(schdl -> {
-                ScheduleDTO newSch = convertScheduleToDTO(schdl);
-                scheduleDTOList.add(newSch);
-            });
+        schedules.forEach(schedule->{
+            scheduleDTOList.add(convertScheduleToDTO(schedule));
 
-        } else {
-            throw new IllegalStateException("Error retrieving schedules");
-        }
+        });
+
         return scheduleDTOList;
     }
 
@@ -62,12 +58,10 @@ public class ScheduleController {
         List<Schedule> scheduleList = scheduleRepo.getScheduleForPet(petId);
         List<ScheduleDTO> scheduleDTOList = new ArrayList<>();
 
-        if (!scheduleList.isEmpty()) {
-            scheduleList.forEach(schList->{
-                ScheduleDTO scheduleDTO = convertScheduleToDTO(schList);
-                scheduleDTOList.add(scheduleDTO);
-            });
-        }
+            scheduleList.forEach(schList -> {
+                 scheduleDTOList.add(convertScheduleToDTO(schList));
+
+        });
         return scheduleDTOList;
     }
 
@@ -75,12 +69,11 @@ public class ScheduleController {
     public List<ScheduleDTO> getScheduleForEmployee(@PathVariable long employeeId) {
         List<Schedule> scheduleList = scheduleRepo.getScheduleForEmployee(employeeId);
         List<ScheduleDTO> scheduleDTOList = new ArrayList<>();
-        if (!scheduleList.isEmpty()) {
-            scheduleList.forEach(schList->{
-                ScheduleDTO scheduleDTO = convertScheduleToDTO(schList);
-                scheduleDTOList.add(scheduleDTO);
-            });
-        }
+
+        scheduleList.forEach(schList -> {
+            scheduleDTOList.add(convertScheduleToDTO(schList));
+
+        });
         return scheduleDTOList;
     }
 
@@ -89,12 +82,10 @@ public class ScheduleController {
         List<Schedule> scheduleList = scheduleRepo.getScheduleForCustomer(customerId);
         List<ScheduleDTO> scheduleDTOList = new ArrayList<>();
 
-        if (!scheduleList.isEmpty()) {
-            scheduleList.forEach(schList->{
-                ScheduleDTO scheduleDTO = convertScheduleToDTO(schList);
-                scheduleDTOList.add(scheduleDTO);
-            });
-        }
+            scheduleList.forEach(schList -> {
+                scheduleDTOList.add(convertScheduleToDTO(schList));
+
+        });
         return scheduleDTOList;
     }
 
@@ -102,8 +93,8 @@ public class ScheduleController {
         ScheduleDTO scheduleDTO = new ScheduleDTO();
         BeanUtils.copyProperties(schedule, scheduleDTO);
 
-        List<Pet> petsList = petRepo.getAllPets();
-        List<Employees> employeeList = employeeRepo.getAllEmployees();
+        List<Pet> petsList = schedule.getPets();
+        List<Employees> employeeList = schedule.getEmployees();
 
         List<Long> petIds = new ArrayList<>();
         List<Long> employeeIds = new ArrayList<>();

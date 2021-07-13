@@ -20,11 +20,27 @@ public class PetController {
     PetRepository petRepository;
     CustomerRepository customerRepo;
 
+    /**
+     *
+     * @param petRepository
+     * @param customerRepo
+     */
+
+    /**
+     *
+     * @param petRepository
+     * @param customerRepo
+     */
     public PetController(PetRepository petRepository, CustomerRepository customerRepo) {
         this.petRepository = petRepository;
         this.customerRepo = customerRepo;
     }
 
+    /**
+     *
+     * @param petDTO
+     * @return
+     */
     @PostMapping
     public PetDTO savePet(@RequestBody PetDTO petDTO) {
         Pet savedPet = convertPetDTotoPet(petDTO);
@@ -41,27 +57,51 @@ public class PetController {
 
     }
 
+    /**
+     *
+     * @param petId
+     * @return
+     */
     @GetMapping("/{petId}")
     public PetDTO getPet(@PathVariable long petId) {
         return convertPetToPetDTO(petRepository.getPet(petId));
     }
 
+    /**
+     *
+     * @returns List of PetDTO
+     */
     @GetMapping
     public List<PetDTO> getPets() {
         return convertPetToPetDTO(petRepository.getAllPets());
     }
 
+    /**
+     *
+     * @param ownerId
+     * @return
+     */
     @GetMapping("/owner/{ownerId}")
     public List<PetDTO> getPetsByOwner(@PathVariable long ownerId) {
         return convertPetToPetDTO(petRepository.getOwnerByPet(ownerId));
     }
 
+    /**
+     *
+     * @param petDTO
+     * @return
+     */
     private Pet convertPetDTotoPet(PetDTO petDTO) {
         Pet pet = new Pet();
         BeanUtils.copyProperties(petDTO, pet);
         return pet;
     }
 
+    /**
+     *
+     * @param pet
+     * @return
+     */
     private PetDTO convertPetToPetDTO(Pet pet) {
         PetDTO petDTO = new PetDTO();
         BeanUtils.copyProperties(pet, petDTO);
@@ -71,6 +111,11 @@ public class PetController {
         return petDTO;
     }
 
+    /**
+     *
+     * @param pets
+     * @return List of PetDTO
+     */
     private List<PetDTO> convertPetToPetDTO(List<Pet> pets) {
         List<PetDTO> petDToList = new ArrayList<>();
         pets.forEach(e -> {

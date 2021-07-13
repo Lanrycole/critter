@@ -23,7 +23,6 @@ public class Schedule {
 
     @ElementCollection(targetClass = EmployeeSkill.class)
     @Enumerated(EnumType.STRING)
-    @Column(name="activities")
     private Set<EmployeeSkill> activities;
 
     public long getId() {
